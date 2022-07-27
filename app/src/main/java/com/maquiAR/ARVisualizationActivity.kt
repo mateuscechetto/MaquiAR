@@ -1,18 +1,7 @@
 package com.maquiAR
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Rect
-import android.media.projection.MediaProjectionManager
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
-import android.os.Looper
-import android.view.PixelCopy
 import android.view.View
 import android.widget.ImageButton
 import android.widget.Toast
@@ -28,92 +17,89 @@ import com.maquiAR.support.FavoriteUtils
 import com.maquiAR.support.ProductLoader
 import com.maquiAR.support.recyclers.ARVisualizationProductCardViewRecycler
 import kotlinx.android.synthetic.main.activity_ar_visualization.*
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 
 class ARVisualizationActivity : AppCompatActivity(), AugmentedFaceListener,
     ARVisualizationProductCardViewRecycler.OnProductSelectedListener {
 
     private var productChanged = false
-    private var productPicked: Product? = null
+    private lateinit var productPicked: Product
 
-    private var openDescriptionButton: ImageButton? = null
-    private var addToFavoriteButton: ImageButton? = null
-    private var takePhotoButton: ImageButton? = null
-    private var listProductsButton: ImageButton? = null
-    private var listProductsRecycler: RecyclerView? = null
-    private var toolbar: Toolbar? = null
+    private lateinit var openDescriptionButton: ImageButton
+    private lateinit var addToFavoriteButton: ImageButton
+    private lateinit var takePhotoButton: ImageButton
+    private lateinit var listProductsButton: ImageButton
+    private lateinit var listProductsRecycler: RecyclerView
+    private lateinit var toolbar: Toolbar
 
-    private var augmentedFaceFragment: AugmentedFaceFragment? = null
+    private lateinit var augmentedFaceFragment: AugmentedFaceFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ar_visualization)
 
-        val intent = intent
         productPicked = intent.extras!!.getSerializable("Product") as Product
         loadToolbar()
         loadLayoutElements()
         augmentedFaceFragment = face_view as AugmentedFaceFragment
-        augmentedFaceFragment!!.setAugmentedFaceListener(this)
+        augmentedFaceFragment.setAugmentedFaceListener(this)
     }
 
     override fun onFaceAdded(face: AugmentedFaceNode) {
-        face.setFaceMeshTexture(productPicked!!.texturePath)
-        face.setTextureColor(productPicked!!.color)
+        face.setFaceMeshTexture(productPicked.texturePath)
+        face.setTextureColor(productPicked.color)
     }
 
     override fun onFaceUpdate(face: AugmentedFaceNode) {
         if (productChanged) {
             productChanged = false
-            face.setFaceMeshTexture(productPicked!!.texturePath)
-            face.setTextureColor(productPicked!!.color)
+            face.setFaceMeshTexture(productPicked.texturePath)
+            face.setTextureColor(productPicked.color)
         }
     }
 
-    fun loadToolbar() {
-        toolbar = findViewById<View>(R.id.app_toolbar) as Toolbar
-        toolbar!!.title = productPicked!!.name + " - " + productPicked!!.colorName
+    private fun loadToolbar() {
+        toolbar = findViewById(R.id.app_toolbar)
+        toolbar.title = productPicked.name + " - " + productPicked.colorName
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-        supportActionBar!!.setDisplayShowHomeEnabled(false)
+        supportActionBar?.apply{
+            setDisplayHomeAsUpEnabled(false)
+            setDisplayShowHomeEnabled(false)
+        }
     }
 
-    fun loadLayoutElements() {
-        openDescriptionButton = findViewById<View>(R.id.openProductDescriptionButton) as ImageButton
-        openDescriptionButton!!.setImageResource(R.drawable.icon_cart)
-        addToFavoriteButton = findViewById<View>(R.id.toggleFavorite) as ImageButton
+    private fun loadLayoutElements() {
+        openDescriptionButton = findViewById(R.id.openProductDescriptionButton)
+        openDescriptionButton.setImageResource(R.drawable.icon_cart)
+        addToFavoriteButton = findViewById(R.id.toggleFavorite)
         setFavoriteIcon()
-        takePhotoButton = findViewById<View>(R.id.takePhotoButton) as ImageButton
-        takePhotoButton!!.setImageResource(R.drawable.icon_camera)
+        takePhotoButton = findViewById(R.id.takePhotoButton)
+        takePhotoButton.setImageResource(R.drawable.icon_camera)
 
-        listProductsButton = findViewById<View>(R.id.listProducts) as ImageButton
-        listProductsButton!!.setImageResource(R.drawable.icon_list)
+        listProductsButton = findViewById(R.id.listProducts)
+        listProductsButton.setImageResource(R.drawable.icon_list)
 
         loadProducts()
     }
 
-    fun loadProducts() {
-        val products = ProductLoader.loadProducts()
-        loadProductsRecycler(products!!)
+    private fun loadProducts() {
+        loadProductsRecycler(ProductLoader.loadProducts())
     }
 
-    fun loadProductsRecycler(products: List<Product>) {
-        listProductsRecycler =
-            findViewById<View>(R.id.recycler_simple_products_list) as RecyclerView
-        listProductsRecycler!!.visibility = View.INVISIBLE
+    private fun loadProductsRecycler(products: List<Product>) {
         val prodCardAdapter = ARVisualizationProductCardViewRecycler(this, products, this)
-        listProductsRecycler!!.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        listProductsRecycler!!.adapter = prodCardAdapter
+        listProductsRecycler = findViewById<RecyclerView>(R.id.recycler_simple_products_list).apply {
+            visibility = View.VISIBLE
+            layoutManager =
+                LinearLayoutManager(this@ARVisualizationActivity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = prodCardAdapter
+        }
 
     }
 
     override fun onProductSelected(product: Product) {
         this.productPicked = product
-        toolbar!!.title = productPicked!!.name + " - " + productPicked!!.colorName
+        toolbar.title = productPicked.name + " - " + productPicked.colorName
         setFavoriteIcon()
         productChanged = true
 
@@ -121,7 +107,7 @@ class ARVisualizationActivity : AppCompatActivity(), AugmentedFaceListener,
 
     fun openProductDescription(view: View?) {
         val intent = Intent(this, ProductDetailActivity::class.java)
-        intent.putExtra("ProductCheck", productPicked!!)
+        intent.putExtra("ProductCheck", productPicked)
         startActivity(intent)
     }
 
@@ -134,24 +120,24 @@ class ARVisualizationActivity : AppCompatActivity(), AugmentedFaceListener,
     }
 
     fun checkProductInFavorite(): Boolean {
-        return FavoriteUtils.isFavorite(this.productPicked!!.id)
+        return FavoriteUtils.isFavorite(this.productPicked.id)
     }
 
     fun setFavoriteIcon() {
         if (checkProductInFavorite()) {
-            addToFavoriteButton!!.setImageResource(R.drawable.icon_favorite_64dp)
+            addToFavoriteButton.setImageResource(R.drawable.icon_favorite_64dp)
         } else {
-            addToFavoriteButton!!.setImageResource(R.drawable.icon_favorite_bordered_64dp)
+            addToFavoriteButton.setImageResource(R.drawable.icon_favorite_bordered_64dp)
         }
     }
 
     fun addProductToFavorite() {
-        FavoriteUtils.addFavorite(productPicked!!.id, this)
+        FavoriteUtils.addFavorite(productPicked.id, this)
         Toast.makeText(
             applicationContext, "Produto adicionado aos favoritos!",
             Toast.LENGTH_SHORT
         ).show()
-        addToFavoriteButton!!.setImageResource(R.drawable.icon_favorite_64dp)
+        addToFavoriteButton.setImageResource(R.drawable.icon_favorite_64dp)
     }
 
     fun removeProductFromFavorite() {
@@ -160,18 +146,18 @@ class ARVisualizationActivity : AppCompatActivity(), AugmentedFaceListener,
             applicationContext, "Produto removido dos favoritos!",
             Toast.LENGTH_SHORT
         ).show()
-        addToFavoriteButton!!.setImageResource(R.drawable.icon_favorite_bordered_64dp)
+        addToFavoriteButton.setImageResource(R.drawable.icon_favorite_bordered_64dp)
     }
 
     fun takePhoto(view: View) {
-        augmentedFaceFragment!!.takeScreenshot = true
+        augmentedFaceFragment.takeScreenshot = true
     }
 
     fun toggleProductList(view: View) {
-        if (listProductsRecycler!!.visibility == View.INVISIBLE) {
-            listProductsRecycler!!.visibility = View.VISIBLE
+        if (listProductsRecycler.visibility == View.INVISIBLE) {
+            listProductsRecycler.visibility = View.VISIBLE
         } else {
-            listProductsRecycler!!.visibility = View.INVISIBLE
+            listProductsRecycler.visibility = View.INVISIBLE
         }
     }
 

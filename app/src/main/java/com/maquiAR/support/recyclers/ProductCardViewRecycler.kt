@@ -2,7 +2,6 @@ package com.maquiAR.support.recyclers
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +11,14 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.maquiAR.ARVisualizationActivity
 import com.maquiAR.Models.Product
+import com.maquiAR.Models.getColorInt
 import com.maquiAR.R
-import kotlin.math.roundToInt
 
-class ProductCardViewRecycler(private val context: Context, productList: List<Product>) :
+class ProductCardViewRecycler(
+    private val context: Context,
+    private val productListData: List<Product>) :
     RecyclerView.Adapter<ProductCardViewRecycler.ProductView>() {
-    private val productListData: List<Product>
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductView {
         val view: View
         val mInflater = LayoutInflater.from(context)
@@ -27,22 +28,14 @@ class ProductCardViewRecycler(private val context: Context, productList: List<Pr
 
     override fun onBindViewHolder(holder: ProductView, position: Int) {
 
-        holder.productName.setText(productListData[position].name)
-        holder.productDescription.setBackgroundColor(getColorFromFloatArray(productListData[position].color))
+        holder.productName.text = productListData[position].name
+        holder.productDescription.setBackgroundColor(productListData[position].getColorInt())
         holder.productImage.setImageResource(productListData[position].icon)
         holder.productCardView.setOnClickListener {
             val intent = Intent(context, ARVisualizationActivity::class.java)
             intent.putExtra("Product", productListData[position])
             context.startActivity(intent)
         }
-    }
-
-    fun getColorFromFloatArray(array: FloatArray): Int {
-        var r = (array[0] * 255).roundToInt()
-        var g = (array[1] * 255).roundToInt()
-        var b = (array[2] * 255).roundToInt()
-        var hex = String.format("#%02x%02x%02x", r, g, b)
-        return Color.parseColor(hex)
     }
 
     override fun getItemCount(): Int {
@@ -56,15 +49,12 @@ class ProductCardViewRecycler(private val context: Context, productList: List<Pr
         val productDescription: TextView
 
         init {
-            productCardView = productItem.findViewById<View>(R.id.card_product_view) as CardView
-            productImage = productItem.findViewById<View>(R.id.product_card_image) as ImageView
-            productName = productItem.findViewById<View>(R.id.product_card_name) as TextView
+            productCardView = productItem.findViewById<CardView>(R.id.card_product_view)
+            productImage = productItem.findViewById<ImageView>(R.id.product_card_image)
+            productName = productItem.findViewById<TextView>(R.id.product_card_name)
             productDescription =
-                productItem.findViewById<View>(R.id.product_card_description) as TextView
+                productItem.findViewById<TextView>(R.id.product_card_description)
         }
     }
 
-    init {
-        productListData = productList
-    }
 }

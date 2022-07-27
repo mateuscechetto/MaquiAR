@@ -18,18 +18,18 @@ import com.maquiAR.support.FavoriteUtils
 
 class ProductDetailActivity : AppCompatActivity() {
 
-    private var productPicked: Product? = null
+    private lateinit var productPicked: Product
 
     //Layout TextView fields
-    private var prodName: TextView? = null
-    private var prodDescription: TextView? = null
-    private var prodColor: TextView? = null
+    private lateinit var prodName: TextView
+    private lateinit var prodDescription: TextView
+    private lateinit var prodColor: TextView
 
-    private var prodARViewButton: Button? = null
-    private var addToFavoriteButton: ImageButton? = null
+    private lateinit var prodARViewButton: Button
+    private lateinit var addToFavoriteButton: ImageButton
 
-    private var imageSlider: ImageSlider? = null
-    val imageList = ArrayList<SlideModel>()
+    private lateinit var imageSlider: ImageSlider
+    private val imageList = ArrayList<SlideModel>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,35 +41,37 @@ class ProductDetailActivity : AppCompatActivity() {
         getLayoutElements()
 
         val intent = intent
-        productPicked = intent.extras!!.getSerializable("ProductCheck") as Product?
+        productPicked = intent.extras!!.getSerializable("ProductCheck") as Product
 
         loadImageSlider()
 
         if (checkProductInFavorite()) {
-            addToFavoriteButton!!.setImageResource(R.drawable.icon_favorite_64dp)
+            addToFavoriteButton.setImageResource(R.drawable.icon_favorite_64dp)
         } else {
-            addToFavoriteButton!!.setImageResource(R.drawable.icon_favorite_bordered_64dp)
+            addToFavoriteButton.setImageResource(R.drawable.icon_favorite_bordered_64dp)
         }
 
         setProductInfo()
 
     }
 
-    fun loadToolbar() {
+    private fun loadToolbar() {
         val toolbar = findViewById<View>(R.id.app_toolbar) as Toolbar
         toolbar.title = "Sobre o Produto"
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
+        supportActionBar?.apply{
+            setDisplayHomeAsUpEnabled(false)
+            setDisplayShowHomeEnabled(false)
+        }
     }
 
-    fun loadBottomMenuNavigation() {
+    private fun loadBottomMenuNavigation() {
         val bottomMenu = findViewById<BottomNavigationView>(R.id.bottom_menu)
         bottomMenu.selectedItemId = R.id.menuProducts
         bottomMenu.setOnNavigationItemSelectedListener(listener)
     }
 
-    var listener =
+    private var listener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             val intent: Intent
             when (item.itemId) {
@@ -98,41 +100,43 @@ class ProductDetailActivity : AppCompatActivity() {
         prodColor = findViewById<View>(R.id.prodColor) as TextView
     }
 
-    fun loadImageSlider() {
-        for (i in productPicked!!.images) {
+    private fun loadImageSlider() {
+        for (i in productPicked.images) {
             imageList.add(SlideModel(i))
         }
         imageSlider = findViewById<ImageSlider>(R.id.image_slider)
-        imageSlider!!.setImageList(imageList)
+        imageSlider.setImageList(imageList)
 
     }
 
-    fun checkProductInFavorite(): Boolean {
-        return FavoriteUtils.isFavorite(this.productPicked!!.id)
+    private fun checkProductInFavorite(): Boolean {
+        return FavoriteUtils.isFavorite(this.productPicked.id)
     }
 
-    fun setProductInfo() {
-        prodName!!.text = productPicked!!.name
-        prodColor!!.text = "Cor: " + productPicked!!.colorName
-        prodDescription!!.text = productPicked!!.description
+    private fun setProductInfo() {
+       productPicked.apply {
+           prodName.text = name
+           prodColor.text = "Cor: $colorName"
+           prodDescription.text = description
+       }
     }
 
     fun addProductToFavorite() {
-        FavoriteUtils.addFavorite(productPicked!!.id, this)
+        FavoriteUtils.addFavorite(productPicked.id, this)
         Toast.makeText(
             applicationContext, "Produto adicionado aos favoritos!",
             Toast.LENGTH_SHORT
         ).show()
-        addToFavoriteButton!!.setImageResource(R.drawable.icon_favorite_64dp)
+        addToFavoriteButton.setImageResource(R.drawable.icon_favorite_64dp)
     }
 
     fun removeProductFromFavorite() {
-        FavoriteUtils.removeFavorite(productPicked!!.id, this)
+        FavoriteUtils.removeFavorite(productPicked.id, this)
         Toast.makeText(
             applicationContext, "Produto removido dos favoritos!",
             Toast.LENGTH_SHORT
         ).show()
-        addToFavoriteButton!!.setImageResource(R.drawable.icon_favorite_bordered_64dp)
+        addToFavoriteButton.setImageResource(R.drawable.icon_favorite_bordered_64dp)
     }
 
     fun checkProductAR(view: View) {
@@ -143,7 +147,7 @@ class ProductDetailActivity : AppCompatActivity() {
 
     fun goToWebsite(view: View?) {
         val intent = Intent(Intent.ACTION_VIEW)
-        intent.setData(Uri.parse(productPicked!!.ecommerceLink))
+        intent.setData(Uri.parse(productPicked.ecommerceLink))
         startActivity(intent)
     }
 

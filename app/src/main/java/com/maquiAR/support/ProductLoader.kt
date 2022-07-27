@@ -7,14 +7,14 @@ import com.maquiAR.Models.Product
 
 object ProductLoader {
 
-    val allProducts: MutableList<Product>? = ArrayList()
+    private val allProducts: MutableList<Product> = ArrayList()
 
-    fun loadProducts(): MutableList<Product>? {
-        if (allProducts!!.size > 0) {
+    fun loadProducts(): MutableList<Product> {
+        if (allProducts.isEmpty()) {
             return allProducts
         }
 
-        allProducts!!.add(
+        allProducts.add(
             Lipstick(
                 1,
                 "Batom e Brilho labial Luisance",
@@ -36,7 +36,7 @@ object ProductLoader {
         list.add("https://www.maccosmetics.com.br/media/export/cms/products/640x600/mac_sku_M0N904_640x600_0.jpg")
         list.add("https://www.maccosmetics.com.br/media/export/cms/products/640x600/mac_sku_M0N904_640x600_3.jpg")
         list.add("https://www.maccosmetics.com.br/media/export/cms/products/smoosh_v2/mac_smoosh_M0N904.jpg")
-        allProducts!!.add(
+        allProducts.add(
             Lipstick(
                 2,
                 "Batom Retro Matte",
@@ -48,7 +48,7 @@ object ProductLoader {
             )
         )
 
-        allProducts!!.add(
+        allProducts.add(
             Lipstick(
                 3,
                 "Batom",
@@ -64,7 +64,7 @@ object ProductLoader {
             )
         )
 
-        allProducts!!.add(
+        allProducts.add(
             Lipstick(
                 4,
                 "Batom Matte HLLR Chic",
@@ -84,7 +84,7 @@ object ProductLoader {
 
 
 
-        allProducts!!.add(
+        allProducts.add(
             EyeShadow(
                 5,
                 "Sombra de olho",
@@ -97,7 +97,7 @@ object ProductLoader {
             )
         )
 
-        allProducts!!.add(
+        allProducts.add(
             EyeShadow(
                 6,
                 "Sombra de olho",
@@ -111,7 +111,7 @@ object ProductLoader {
         )
 
 
-        allProducts!!.add(
+        allProducts.add(
             Blush(
                 7,
                 "Blush",
@@ -123,7 +123,7 @@ object ProductLoader {
             )
         )
 
-        allProducts!!.add(
+        allProducts.add(
             Blush(
                 7,
                 "Blush",
@@ -140,6 +140,6 @@ object ProductLoader {
     }
 
     fun getRandomProduct(): Product {
-        return allProducts!!.random()
+        return allProducts.random()
     }
 }

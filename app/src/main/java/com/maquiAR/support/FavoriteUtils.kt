@@ -1,36 +1,31 @@
 package com.maquiAR.support
 
 import android.app.Activity
-import android.content.Context
 import androidx.preference.PreferenceManager
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.maquiAR.Models.Product
-import java.lang.reflect.Type
 
 object FavoriteUtils {
 
-    private var favoriteIds:  ArrayList<Int> = ArrayList()
+    private var favoriteIds:  MutableList<Int> = ArrayList()
 
 
-    fun loadFavoriteIds(activity: Activity): java.util.ArrayList<Int> {
+    private fun loadFavoriteIds(activity: Activity): List<Int> {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(activity)
-        val gson = Gson()
-        val json = sharedPref.getString("Favoritos", "[]")
-        if(json!!.length < 3) {
+        val json = sharedPref.getString("Favoritos", "[]") ?: "[]"
+        if(json.length < 3) {
             this.favoriteIds = ArrayList()
             return this.favoriteIds
         }
-        var stringList = json!!.substring(1,json!!.length -1).split(",")
-        var intList = ArrayList<Int>()
-        for(string in stringList) {
-            intList.add(string!!.toInt())
-        }
+        var stringList = json.substring(1, json.length - 1).split(",")
+        var intList = stringList.map { string ->
+            string.toInt()
+        }.toMutableList()
         this.favoriteIds = intList
         return this.favoriteIds
     }
 
-    fun saveFavorites(activity: Activity) {
+    private fun saveFavorites(activity: Activity) {
         val key = "Favoritos"
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(activity)
         val gson = Gson()
@@ -42,36 +37,30 @@ object FavoriteUtils {
 
     }
 
-    fun getFavorites(activity: Activity): MutableList<Int>? {
-        if(favoriteIds!!.size == 0) {
+    fun getFavorites(activity: Activity): List<Int> {
+        if(favoriteIds.isEmpty()) {
             loadFavoriteIds(activity)
         }
         return this.favoriteIds
     }
 
     fun addFavorite(id: Int, activity: Activity) {
-        this.favoriteIds!!.add(id)
+        this.favoriteIds.add(id)
         saveFavorites(activity)
     }
 
     fun removeFavorite(id: Int, activity: Activity) {
-        this.favoriteIds!!.remove(id)
+        this.favoriteIds.remove(id)
         saveFavorites(activity)
     }
 
     fun isFavorite(id: Int) : Boolean {
-        return favoriteIds!!.contains(id)
+        return favoriteIds.contains(id)
     }
 
-    fun getProductsByIdsList(allProducts: List<Product>, favoriteIds: List<Int>): MutableList<Product>? {
-        var list = ArrayList<Product>()
-        for(id in favoriteIds) {
-            val productWithId = allProducts.find{ it.id == id }
-            productWithId?.let {
-                list.add(it)
-            }
+    fun getProductsByIdsList(allProducts: List<Product>, favoriteIds: List<Int>): List<Product> {
+        return allProducts.filter { product ->
+            favoriteIds.contains(product.id)
         }
-        return list
     }
-
 }

@@ -16,9 +16,9 @@ import com.maquiAR.support.ProductLoader
 
 class FavoriteActivity : AppCompatActivity() {
 
-    private var allProducts: MutableList<Product>? = ArrayList()
-    private var favoriteIds:  MutableList<Int>? = ArrayList()
-    private var favoriteProducts: MutableList<Product>? = ArrayList()
+    private var allProducts: List<Product> = ArrayList()
+    private var favoriteIds:  List<Int> = ArrayList()
+    private var favoriteProducts: List<Product> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,20 +30,20 @@ class FavoriteActivity : AppCompatActivity() {
 
         allProducts = ProductLoader.loadProducts()
         favoriteIds = FavoriteUtils.getFavorites(this)
-        favoriteProducts = FavoriteUtils.getProductsByIdsList(allProducts!!.toList(), favoriteIds!!.toList())
+        favoriteProducts = FavoriteUtils.getProductsByIdsList(allProducts, favoriteIds)
 
-        showProducts(favoriteProducts!!)
+        showProducts(favoriteProducts)
     }
 
 
-    fun showProducts(products: List<Product>) {
+    private fun showProducts(products: List<Product>) {
         val productExhibition = findViewById<View>(R.id.recycler_products_list) as RecyclerView
         val prodCardAdapter = ProductCardViewRecycler(this, products)
         productExhibition.layoutManager = GridLayoutManager(this, 2)
         productExhibition.adapter = prodCardAdapter
 
         val emptyText = findViewById<View>(R.id.empty_view) as TextView
-        if(products!!.isEmpty()) {
+        if(products.isEmpty()) {
             productExhibition.visibility = View.GONE
             emptyText.visibility = View.VISIBLE
         } else {
@@ -52,15 +52,17 @@ class FavoriteActivity : AppCompatActivity() {
         }
     }
 
-    fun loadToolbar() {
+    private fun loadToolbar() {
         val toolbar = findViewById<View>(R.id.app_toolbar) as Toolbar
         toolbar.title = "Favoritos"
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
+        supportActionBar?.apply{
+            setDisplayHomeAsUpEnabled(false)
+            setDisplayShowHomeEnabled(false)
+        }
     }
 
-    fun loadBottomMenuNavigation() {
+    private fun loadBottomMenuNavigation() {
         val bottomMenu = findViewById<BottomNavigationView>(R.id.bottom_menu)
         bottomMenu.setOnNavigationItemSelectedListener(listener)
         bottomMenu.selectedItemId = R.id.menuFavorite

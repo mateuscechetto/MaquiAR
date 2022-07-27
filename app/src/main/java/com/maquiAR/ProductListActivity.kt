@@ -15,7 +15,7 @@ import com.maquiAR.support.ProductLoader
 
 class ProductListActivity : AppCompatActivity() {
 
-    private var allProducts: MutableList<Product>? = ArrayList()
+    private var allProducts: MutableList<Product> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,32 +29,34 @@ class ProductListActivity : AppCompatActivity() {
 
         FavoriteUtils.getFavorites(this)
 
-        showProducts(allProducts!!.toList())
+        showProducts(allProducts)
 
     }
 
-    fun showProducts(products: List<Product>) {
+    private fun showProducts(products: List<Product>) {
         val productExhibition = findViewById<View>(R.id.recycler_products_list) as RecyclerView
         val prodCardAdapter = ProductCardViewRecycler(this, products)
         productExhibition.layoutManager = GridLayoutManager(this, 2)
         productExhibition.adapter = prodCardAdapter
     }
 
-    fun loadToolbar() {
+    private fun loadToolbar() {
         val toolbar = findViewById<View>(R.id.app_toolbar) as Toolbar
         toolbar.title = "Todas as Maquiagens"
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-        supportActionBar!!.setDisplayShowHomeEnabled(false)
+        supportActionBar?.apply{
+            setDisplayHomeAsUpEnabled(false)
+            setDisplayShowHomeEnabled(false)
+        }
     }
 
-    fun loadBottomMenuNavigation() {
+    private fun loadBottomMenuNavigation() {
         val bottomMenu = findViewById<BottomNavigationView>(R.id.bottom_menu)
         bottomMenu.setOnNavigationItemSelectedListener(listener)
         bottomMenu.selectedItemId = R.id.menuProducts
     }
 
-    var listener =
+    private var listener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             val intent: Intent
             when (item.itemId) {
