@@ -1,5 +1,8 @@
 # MaquiAR - Makeup try-on app with augmented reality using ARCore 
 
+Read this README em outras línguas: [English](README.md), [Português](README.pt-br.md)
+
+
 ## Description
 
 This app was developed as the undergraduation thesis for Information Systems major at Universidade Federal de Santa Catarina and has no commercial purposes.
