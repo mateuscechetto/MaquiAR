@@ -1,12 +1,17 @@
-# MaquiAR - Aplicativo de try-on de maquiagem com realidade aumentada usando ARCore
+# MaquiAR - Makeup try-on app with augmented reality using ARCore 
 
-## Descrição
+## Description
 
-Este aplicativo foi desenvolvido como Trabalho de conclusão de curso para o Bacharelado em Sistemas de Informação na Universidade Federal de Santa Catarina e não possui propósitos comerciais.
+This app was developed as the undergraduation thesis for Information Systems major at Universidade Federal de Santa Catarina and has no commercial purposes.
 
-## Referências
+## Demonstration
 
-Algumas features deste trabalho foram realizadas por terceiros. Para fazer o uso de maneira correta e apropriada, todos os itens não desenvolvidos pelo autor deste trabalho estarão corretamente referenciados e creditados abaixo.
+Link: https://youtu.be/Ch7qy21mvBo
+
+## References
+
+Some features used in this project were made by other people. 
+To make use correctly and appropriately, all items not developed by the author of this work will be correctly referenced and with the given credits below. 
 
 ### ARCore Augmented Faces wrapper without Sceneform
 
