@@ -1,6 +1,6 @@
 # MaquiAR - Makeup try-on app with augmented reality using ARCore 
 
-Read this README em outras línguas: [English](README.md), [Português](README.pt-br.md)
+Read this README in other languages: [English](README.md), [Português](README.pt-br.md)
 
 
 ## Description
