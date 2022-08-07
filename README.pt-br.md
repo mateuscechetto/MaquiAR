@@ -10,6 +10,11 @@ Este aplicativo foi desenvolvido como Trabalho de conclusão de curso para o Bac
 
 Link: https://youtu.be/Ch7qy21mvBo
 
+![image](https://user-images.githubusercontent.com/32515099/183312180-658c8aea-859d-4d9d-8ee7-7360af1fc605.png)
+
+![image](https://user-images.githubusercontent.com/32515099/183312195-d83e3a1f-9a2a-455e-8be8-84ff3286fe60.png)
+
+
 ## Referências
 
 Algumas features deste trabalho foram realizadas por terceiros. 
